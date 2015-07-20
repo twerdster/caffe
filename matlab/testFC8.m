@@ -13,19 +13,24 @@ for i=1:196
     I = read(vid,i);
     
     subplot(121)
-    I = imresize(I,[500 500]); I_=I;
+    I = imresize(I,[500 1000]); I_=I;
     imshow(I_)
     
-    I = single(I) - repmat(avg,[500 500]);
+    I = single(I) - repmat(avg,[500 1000]);
     I = I(:,:,[3 2 1]);
     I = permute(I,[2 1 3]);
     
-    net.blobs('data').set_data(reshape(I,[500 500 3 1]));
-    
+    I1 = I(1:500,:,:);
+    net.blobs('data').set_data(reshape(I1,[500 500 3 1]));
     net.forward_prefilled();
+    [m,ind1]=max(net.blobs('upscore').get_data(),[],3);
     
-    [m,ind]=max(net.blobs('upscore').get_data(),[],3);
+    I2 = I(501:end,:,:);
+    net.blobs('data').set_data(reshape(I2,[500 500 3 1]));
+    net.forward_prefilled();
+    [m,ind2]=max(net.blobs('upscore').get_data(),[],3);
     
+    ind = cat(1,ind1,ind2);
     subplot(122)
     
     imagesc(ind')
