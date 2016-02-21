@@ -1,4 +1,4 @@
-caffe.set_mode_cpu()
+caffe.set_mode_gpu()
 caffe.reset_all()
 
 avg = cat(3,122.67891434,116.66876762,104.00698793);

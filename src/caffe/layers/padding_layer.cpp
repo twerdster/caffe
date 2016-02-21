@@ -24,10 +24,10 @@ void PaddingLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   pad_b_ = pad_param.pad_b();
   pad_value_ = pad_param.pad_value();
   
-  CHECK_GT(pad_l_, 0) << "Padding ammount must be non negative.";
-  CHECK_GT(pad_r_, 0) << "Padding ammount must be non negative.";
-  CHECK_GT(pad_t_, 0) << "Padding ammount must be non negative.";
-  CHECK_GT(pad_b_, 0) << "Padding ammount must be non negative.";
+  CHECK_GT(pad_l_, -1) << "Padding ammount must be non negative.";
+  CHECK_GT(pad_r_, -1) << "Padding ammount must be non negative.";
+  CHECK_GT(pad_t_, -1) << "Padding ammount must be non negative.";
+  CHECK_GT(pad_b_, -1) << "Padding ammount must be non negative.";
 
   CHECK(this->layer_param_.padding_param().pad_method()
       == PaddingParameter_PadMethod_CONSTANT

@@ -269,7 +269,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 138 (last added: reduction_param)
+// LayerParameter next available layer-specific ID: 139 (last added: padding_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -352,6 +352,7 @@ message LayerParameter {
   optional TanHParameter tanh_param = 127;
   optional ThresholdParameter threshold_param = 128;
   optional WindowDataParameter window_data_param = 129;
+  optional PaddingParameter padding_param = 138;
 }
 
 // Message that stores parameters used to apply transformation
@@ -694,6 +695,28 @@ message PoolingParameter {
   optional bool global_pooling = 12 [default = false];
 }
 
+message PaddingParameter {
+  enum PadMethod {
+    CONSTANT = 0; // constant border fill
+    REPEAT = 1;   // repeat the values along the border
+    WRAP = 2;     // wrap the values around from the other side
+  }
+  optional PadMethod pad_method = 1 [default = REPEAT]; // The padding method
+  // Explicit padding for every side is given
+  // For reference: top left corner is the origin
+  optional uint32 pad_l = 2 [default = 0]; // number of columns to add to the left
+  optional uint32 pad_r = 3 [default = 0]; // number of columns to add to the right
+  optional uint32 pad_t = 4 [default = 0]; // number of rows to add to the top 
+  optional uint32 pad_b = 5 [default = 0]; // number of rows to add to the bottom
+  optional float pad_value = 6 [default = 0]; // if pad_method is CONSTANT then use this value
+
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+  }
+  optional Engine engine = 7 [default = DEFAULT];
+}
+
 message PowerParameter {
   // PowerLayer computes outputs y = (shift + scale * x) ^ power.
   optional float power = 1 [default = 1.0];
@@ -961,6 +984,7 @@ message V1LayerParameter {
     TANH = 23;
     WINDOW_DATA = 24;
     THRESHOLD = 31;
+    PADDING = 41;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1004,6 +1028,7 @@ message V1LayerParameter {
   optional TransformationParameter transform_param = 36;
   optional LossParameter loss_param = 42;
   optional V0LayerParameter layer = 1;
+  optional PaddingParameter padding_param = 43;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters

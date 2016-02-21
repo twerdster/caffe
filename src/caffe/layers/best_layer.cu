@@ -15,7 +15,7 @@ namespace caffe {
                                 const int div_factor) {
         CUDA_KERNEL_LOOP(index, n) {
             int c = (index / dim) % channels / div_factor;
-            out[index] = max(in[index] - beta[c], 0) - max(-in[index] - beta[c], 0);
+            out[index] = max(in[index] - beta[c], 0.0f) - max(-in[index] - beta[c], 0.0f);
         }
     }
     
@@ -26,8 +26,8 @@ namespace caffe {
                                  const Dtype* beta, const int div_factor) {
         CUDA_KERNEL_LOOP(index, n) {
             int c = (index / dim) % channels / div_factor;
-            out_Diff[index] = in_diff[index] * (    (abs(in_data[index]) > abs(beta[c]))
-                                                + 2*(abs(in_data[index] < -beta[c]) ));
+            out_diff[index] = in_diff[index] * (    (abs(in_data[index]) > abs(beta[c]))
+                                                + 2.0f*(abs(in_data[index]) < -beta[c]) );
         }
     }
     
@@ -38,8 +38,8 @@ namespace caffe {
                                       const Dtype* beta, const int div_factor) {
         CUDA_KERNEL_LOOP(index, n) {
             int c = (index / dim) % channels / div_factor;
-            out_diff[index] = in_diff[index] * (- (abs(beta[c]) <  in_data[index])
-                                                + (abs(beta[c]) < -in_data[index]));
+            out_diff[index] = in_diff[index] * (- (fabsf(beta[c]) <  in_data[index])
+                                                + (fabsf(beta[c]) < -in_data[index]));
         }
     }
     
